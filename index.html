@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>❤️ Euden's Special Countdown ❤️</title>
+    <style>
+        body {
+            font-family: 'Arial Rounded MT Bold', 'Arial', sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ffcce6 0%, #ff99cc 100%);
+            color: #ff0066;
+        }
+        
+        .container {
+            background-color: rgba(255, 255, 255, 0.85);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 90%;
+            border: 3px solid #ff0066;
+        }
+        
+        h1 {
+            color: #ff0066;
+            margin-bottom: 20px;
+            font-size: 2.2rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .heart {
+            font-size: 3rem;
+            color: #ff0066;
+            margin: 10px 0;
+            animation: pulse 1.5s infinite;
+        }
+        
+        #countdown {
+            font-size: 2rem;
+            margin: 20px 0;
+            font-weight: bold;
+            color: #ff0066;
+            background-color: #ffe6f2;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px dashed #ff0066;
+        }
+        
+        .timezone {
+            font-size: 0.9rem;
+            color: #ff6699;
+            margin-bottom: 20px;
+        }
+        
+        .password-container {
+            display: none;
+            margin-top: 30px;
+            animation: fadeIn 1s;
+        }
+        
+        .password-display {
+            font-size: 1.5rem;
+            letter-spacing: 5px;
+            margin: 15px 0;
+            height: 30px;
+            color: #ff0066;
+        }
+        
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            max-width: 250px;
+            margin: 0 auto;
+        }
+        
+        .key {
+            background-color: #ffccdd;
+            border: 2px solid #ff0066;
+            border-radius: 50%;
+            padding: 15px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #ff0066;
+            font-weight: bold;
+        }
+        
+        .key:hover {
+            background-color: #ffb3d9;
+            transform: scale(1.05);
+        }
+        
+        .key:active {
+            transform: scale(0.95);
+        }
+        
+        .submit-btn {
+            background-color: #ff0066;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+            box-shadow: 0 3px 10px rgba(255, 0, 102, 0.3);
+        }
+        
+        .submit-btn:hover {
+            background-color: #cc0052;
+            transform: translateY(-2px);
+        }
+        
+        .submit-btn:active {
+            transform: translateY(1px);
+        }
+        
+        .message {
+            font-style: italic;
+            margin-top: 20px;
+            color: #ff6699;
+            font-size: 0.9rem;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .heart-emoji {
+            position: absolute;
+            font-size: 20px;
+            opacity: 0.6;
+            animation: float linear infinite;
+        }
+        
+        @keyframes float {
+            to {
+                transform: translateY(-100vh) rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-hearts" id="hearts-container"></div>
+    
+    <div class="container" id="main-container">
+        <h1>❤️ Countdown to Euden's Birthday! ❤️</h1>
+        <div class="heart">🎀</div>
+        
+        <div id="countdown-container">
+            <p>Time remaining until August 10th:</p>
+            <div id="countdown"></div>
+        </div>
+        
+        
+        <div class="password-container" id="password-section">
+            <p>Enter the secret code to continue:</p>
+            <div class="password-display" id="password-display">____</div>
+            <div class="keypad">
+                <div class="key" data-value="1">1</div>
+                <div class="key" data-value="2">2</div>
+                <div class="key" data-value="3">3</div>
+                <div class="key" data-value="4">4</div>
+                <div class="key" data-value="5">5</div>
+                <div class="key" data-value="6">6</div>
+                <div class="key" data-value="7">7</div>
+                <div class="key" data-value="8">8</div>
+                <div class="key" data-value="9">9</div>
+                <div class="key" data-value="0">0</div>
+                <div class="key" data-value="clear">⌫</div>
+            </div>
+            <button class="submit-btn" id="submit-btn">Submit</button>
+            <p class="message" id="error-message"></p>
+        </div>
+    </div>
+
+    <script>
+        // Create floating hearts
+        function createHearts() {
+            const container = document.getElementById('hearts-container');
+            const hearts = ['❤️', '🧡', '💛', '💚', '💙', '💜', '🤎', '🖤', '🤍', '💖', '💗', '💘', '💝'];
+            
+            for (let i = 0; i < 30; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart-emoji';
+                heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.top = Math.random() * 100 + 'vh';
+                heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                heart.style.animationDuration = (Math.random() * 20 + 10) + 's';
+                heart.style.animationDelay = (Math.random() * 5) + 's';
+                container.appendChild(heart);
+            }
+        }
+        
+        createHearts();
+        
+         function updateCountdown() {
+    // Get current time in UTC
+    const now = new Date();
+    // const now = new Date(Date.UTC(2025, 7, 9, 18, 0, 0)); 
+
+    // Convert to Bhutan time (UTC+6)
+    const bhutanTime = new Date(now.getTime() + (6 * 60 * 60 * 1000));
+    
+    const currentYear = bhutanTime.getUTCFullYear();
+    const bhutanMonth = bhutanTime.getUTCMonth(); // 0-indexed (0 = Jan, 7 = Aug)
+    const bhutanDate = bhutanTime.getUTCDate();
+
+    // Check if it's August 10 in Bhutan
+    if (bhutanMonth === 7 && bhutanDate === 10) {
+        document.getElementById("countdown").innerHTML = "It's Euden's Birthday!";
+        document.getElementById("password-section").style.display = "block";
+        return;
+    }
+
+    // If not August 10, count down to the next one
+    let targetYear = currentYear;
+    if (bhutanMonth > 7 || (bhutanMonth === 7 && bhutanDate > 10)) {
+        targetYear += 1; // Next year
+    }
+
+    // Target date: August 10 at 00:00 Bhutan Time
+    const targetBhutanTime = new Date(Date.UTC(targetYear, 7, 10, 0, 0) - (6 * 60 * 60 * 1000));
+
+    // Countdown calculation
+    const distance = targetBhutanTime.getTime() - now.getTime();
+
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    document.getElementById("countdown").innerHTML =
+        days + "d " + hours + "h " + minutes + "m " + seconds + "s";
+
+    // Keep updating
+    setTimeout(updateCountdown, 1000);
+}
+        
+        // Start the countdown
+        updateCountdown();
+        
+        // Password logic
+        let enteredCode = '';
+        const correctCode = '1008'; // August 10
+        
+        document.querySelectorAll('.key').forEach(key => {
+            key.addEventListener('click', function() {
+                const value = this.getAttribute('data-value');
+                
+                if (value === 'clear') {
+                    enteredCode = '';
+                } else if (enteredCode.length < 4) {
+                    enteredCode += value;
+                }
+                
+                updatePasswordDisplay();
+            });
+        });
+        
+        function updatePasswordDisplay() {
+            const display = document.getElementById('password-display');
+            let displayText = '';
+            
+            for (let i = 0; i < 4; i++) {
+                if (i < enteredCode.length) {
+                    displayText += enteredCode[i];
+                } else {
+                    displayText += '_';
+                }
+                
+                if (i < 3) displayText += ' ';
+            }
+            
+            display.textContent = displayText;
+        }
+        
+        document.getElementById('submit-btn').addEventListener('click', function() {
+            if (enteredCode === correctCode) {
+                // Correct code - redirect to celebration page
+                window.location.href = "pc.html";
+            } else {
+                document.getElementById('error-message').textContent = "Incorrect code! Try again.";
+                enteredCode = '';
+                updatePasswordDisplay();
+            }
+        });
+    </script>
+</body>
+</html>

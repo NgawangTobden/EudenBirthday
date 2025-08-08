@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Euden's Birthday Desktop</title>
+  <style>
+    :root {
+      --primary: #ff6b8b;
+      --secondary: #ffb3c6;
+      --accent: #ff2d6d;
+      --text: #5a2a38;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #ffd6e0 0%, #ffeff4 100%);
+      color: var(--text);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .wallpaper {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(255,214,224,0.6) 0%, rgba(255,179,198,0.4) 100%);
+      z-index: -1;
+    }
+
+    .icon-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 60px;
+      text-align: center;
+    }
+
+    .app-icon {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+      font-size: 26px;
+    }
+
+    .app-icon:hover {
+      transform: scale(1.1);
+    }
+
+    .app-emoji {
+      font-size: 80px;
+      margin-bottom: 10px;
+    }
+
+    .app-name {
+      font-size: 20px;
+      font-weight: bold;
+      color: var(--text);
+    }
+
+    .heart {
+      position: absolute;
+      color: var(--primary);
+      animation: float 5s linear infinite;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wallpaper"></div>
+  <div id="hearts-container"></div>
+
+  <div class="icon-grid">
+    <div class="app-icon" onclick="location.href='book.html'">
+      <div class="app-emoji">📕</div>
+      <div class="app-name">Special Book</div>
+    </div>
+    <div class="app-icon" onclick="location.href='cake.html'">
+      <div class="app-emoji">🎂</div>
+      <div class="app-name">Birthday Cake</div>
+    </div>
+    <div class="app-icon" onclick="location.href='why.html'">
+      <div class="app-emoji">🌷</div>
+      <div class="app-name">Why?</div>
+    </div>
+    <div class="app-icon" onclick="location.href='timer.html'">
+      <div class="app-emoji">⏱️</div>
+      <div class="app-name">Timer</div>
+    </div>
+  </div>
+
+  <script>
+    function createHearts() {
+      const container = document.getElementById('hearts-container');
+      const hearts = ['❤️', '🧡', '💛', '💚', '💙', '💜', '🤎', '🖤', '🤍', '💖', '💗', '💘', '💝'];
+      for (let i = 0; i < 15; i++) {
+        const heart = document.createElement('div');
+        heart.className = 'heart';
+        heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.animationDuration = (Math.random() * 10 + 5) + 's';
+        heart.style.animationDelay = (Math.random() * 5) + 's';
+        container.appendChild(heart);
+      }
+    }
+
+    createHearts();
+  </script>
+</body>
+</html>

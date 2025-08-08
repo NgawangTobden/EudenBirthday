@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Love Rain For Euden</title>
+<style>
+
+::-webkit-scrollbar {
+    display: none;
+}
+  body {
+    margin: 0; 
+    padding: 0;
+    background: linear-gradient(to bottom, #ffdee9, #b5fffc);
+    min-height: 10000vh; /* Extra tall for auto-scrolling */
+    overflow-x: hidden;
+    /* Hide scrollbar but keep scrolling */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    position: relative;
+  }
+
+  /* Hide scrollbar for Chrome/Safari */
+  body::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Containers for rain layers */
+  #wordsRain, #imagesRain {
+    position: fixed;
+    top: 0; 
+    left: 0;
+    width: 100vw; 
+    height: 100vh;
+    pointer-events: none;
+    overflow: visible;
+  }
+
+  /* Common styles for falling elements */
+  .falling {
+    position: absolute;
+    top: -100px;
+    opacity: 0.9;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+  }
+
+  /* Words style */
+  .falling-word {
+    font-size: 20px;
+    font-weight: bold;
+    color: #ff007f;
+    text-shadow: 1px 1px 2px white;
+    white-space: nowrap;
+    padding: 5px 10px;
+    border-radius: 15px;
+    background: rgba(255,255,255,0.3);
+    animation-name: fallAndSway;
+  }
+
+  /* Images style */
+  .falling-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 15px;
+    object-fit: cover;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    border: 2px solid white;
+    animation-name: fallAndSway;
+  }
+
+  /* Keyframes for falling + horizontal sway */
+  @keyframes fallAndSway {
+    0% {
+      transform: translateX(0) translateY(0);
+      opacity: 1;
+    }
+    50% {
+      transform: translateX(20px) translateY(50vh);
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(0) translateY(110vh);
+      opacity: 0;
+    }
+  }
+
+  /* Center message */
+  .center-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3rem;
+    font-weight: bold;
+    color: #ff007f;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    z-index: 100;
+    text-align: center;
+    max-width: 80%;
+  }
+</style>
+</head>
+<body>
+
+<div id="wordsRain"></div>
+<div id="imagesRain"></div>
+<div class="center-message">You are my Euden</div>
+
+
+<script>
+  const reasons = [
+    "Your smile brightens my world.",
+    "You always know how to cheer me up.",
+    "Your laughter is my favorite sound.",
+    "You are beautiful inside and out.",
+    "You support me no matter what.",
+    "You believe in me.",
+    "You're my safe place.",
+    "You're my dream come true.",
+    "You care deeply for me.",
+    "You're incredibly kind.",
+    "You make every moment special.",
+    "You're thoughtful and sweet.",
+    "You're always there for me.",
+    "You give the best cuddles.",
+    "Your presence make me happy",
+    "Your love is my motivation to keep going.",
+    "You inspire me.",
+    "You are my favorite goodmorning.",
+    "You are my hardest goodbye.",
+    "You are my pookie.",
+    "You never judge me.",
+    "You're honest and loyal.",
+    "You make me want to be better.",
+    "You're adorable even when mad.",
+    "You never give up on us.",
+    "You bring out the best in me.",
+    "You accept me as I am.",
+    "You know how to love me.",
+    "You're creative and unique.",
+    "Your voice soothes my soul.",
+    "You're my soulmate.",
+    "You complete me.",
+    "You're my everything.",
+    "You make life magical.",
+    "You're my favorite person.",
+    "I love how you say ToonToon.",
+    "I love how you laugh at my jokes.",
+    "You are my comfort zone.",
+    "You are my happy place.",
+    "You make ordinary moments extraordinary.",
+    "You're my biggest cheerleader.",
+    "You always smell good.",
+    "You make me feel special.",
+    "You make me feel loved.",
+    "I love how you make love feel easy, even when life isn’t..",
+    "i love your art.",
+    "You always understand me.",
+    "You love my flaws.",
+    "I love how you’re the first person I want to tell everything to.",
+    "You're my home.",
+    "You're patient and caring.",
+    "You're brave and bold.",
+    "You are the best duo.",
+    "You are cute.",
+    "You make the stars look dull.",/////
+    "Your hands fit mine like they were sculpted to hold me together.",
+    "You see the messy, unedited me and call it ‘beautiful’ anyway.",
+    "You know me better than anyone.",
+    "You're the love of my life.",
+    "I can't imagine my life without you.",
+    "You're funny and silly.",
+    "You're my partner in crime.",
+    "YYour ‘I’m proud of you’ texts hit harder than any trophy.",
+    "I love you for the way you tear up at cute videos",
+    "You wipe away my tears.",
+    "I love you for the way you cry during sad movies but handle real-life crises so bravely.",
+    "I love you for building a home in your heart where I’m always safe",
+    "You're my biggest blessing.",
+    "You make me a better person.",
+    "I love you for making ‘forever’ feel like a promise, not just a word.",
+    "I love your cute voice.",
+    "I love being with you on call.",
+    "i love the way you love me",
+    "You love me unconditionally.",
+    "You're beautiful in every way.",
+    "You always put effort into us.",
+    "You make my heart race.",
+    "You're so huggable.",
+    "You're my biggest support.",
+    "You make memories unforgettable.",
+    "You believe in us.",
+    "I love how you’re my favorite notification.",
+    "You're so smart.",
+    "You're so strong.",
+    "You keep my secrets.",
+    "You are perfect to me.",
+    "You are enough.",
+    "You make forever sound beautiful.",
+    "You look at me like I'm the only one.",
+    "You make me fall in love every day.",
+    "You make time for me.",
+    "I love how you remember small details about me that even I dont know.",
+    "I love the sound of your voice when you’re half-asleep and mumbling.",
+    "You give love without limits.",
+    "I love how you celebrate my wins like they’re your own.",
+    "You are my one and only.",
+    "I love how you make me feel like the luckiest person in the world.",
+    "You make the world feel right.",
+    "You make me feel complete.",
+    "You are my always.",
+    "You are my forever.",
+    "You are my Euden."
+  ];
+
+  const images = [];
+  for (let i = 1; i <= 11; i++) {
+    images.push(`euden/euden${i}.jpeg`);
+  }
+
+  const wordsRain = document.getElementById("wordsRain");
+  const imagesRain = document.getElementById("imagesRain");
+  const centerMessage = document.querySelector('.center-message');
+
+  // Auto-scroll functionality
+  const scrollSpeed = 60; // pixels per second
+  function autoScroll() {
+    window.scrollBy(0, scrollSpeed / 60);
+    requestAnimationFrame(autoScroll);
+  }
+  
+  // Start auto-scroll
+  autoScroll();
+
+  function createFallingWord() {
+    const el = document.createElement("div");
+    el.className = "falling falling-word";
+    el.textContent = reasons[Math.floor(Math.random() * reasons.length)];
+
+    const startX = Math.random() * (window.innerWidth - 150);
+    el.style.left = `${startX}px`;
+
+    const duration = 8 + Math.random() * 6;
+    el.style.animationDuration = duration + "s";
+    el.style.animationDelay = (Math.random() * 10) + "s";
+
+    wordsRain.appendChild(el);
+
+    setTimeout(() => {
+      wordsRain.removeChild(el);
+    }, (duration + 10) * 1000);
+  }
+
+  function createFallingImage() {
+    const img = document.createElement("img");
+    img.className = "falling falling-image";
+    img.src = images[Math.floor(Math.random() * images.length)];
+    img.alt = "Euden";
+
+    const startX = Math.random() * (window.innerWidth - 120);
+    img.style.left = `${startX}px`;
+
+    const duration = 10 + Math.random() * 8;
+    img.style.animationDuration = duration + "s";
+    img.style.animationDelay = (Math.random() * 12) + "s";
+
+    imagesRain.appendChild(img);
+
+    setTimeout(() => {
+      imagesRain.removeChild(img);
+    }, (duration + 12) * 1000);
+  }
+
+  // Rotate center messages
+  const centerMessages = [
+    "You are my Euden",
+    "My love for you is endless",
+    "You complete me",
+    "My heart belongs to you",
+    "Forever yours"
+  ];
+  let currentCenterMessage = 0;
+  setInterval(() => {
+    currentCenterMessage = (currentCenterMessage + 1) % centerMessages.length;
+    centerMessage.textContent = centerMessages[currentCenterMessage];
+  }, 3000);
+
+  // Generate new rain elements continuously
+  setInterval(createFallingWord, 400);
+  setInterval(createFallingImage, 1200);
+
+</script>
+
+</body>
+</html>

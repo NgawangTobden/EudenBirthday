@@ -1,0 +1,167 @@
+<!doctype html>
+<html>
+<head>
+    <title>Happy Birthday Flipbook</title>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" src="./js/turn.min.js"></script>
+
+    <style type="text/css">
+        body {
+            background: #ffebee;
+            margin: 0;
+            padding: 20px;
+            overflow: auto;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: radial-gradient(#ffcdd2 2px, transparent 2px);
+            background-size: 20px 20px;
+        }
+        
+        #container {
+            max-width: 90%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        #magazine {
+            width: 90%;
+            max-width: 1152px;
+            height: 80vh;
+            max-height: 752px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border-radius: 5px;
+        }
+        
+        #magazine .turn-page {
+            background-color: #fff;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        /* Mirrored page solution that works with turn.js */
+        .mirrored-wrapper {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        .mirrored-content {
+            transform: scaleX(-1);
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .click-area {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            width: 40%;
+            z-index: 100;
+            opacity: 0;
+        }
+        
+        #left-click {
+            left: 0;
+        }
+        
+        #right-click {
+            right: 0;
+        }
+        
+        .heart {
+            position: fixed;
+            color: #ff4081;
+            font-size: 24px;
+            animation: float 4s ease-in-out infinite;
+            opacity: 0.7;
+            z-index: -1;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+            100% { transform: translateY(0) rotate(0deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="heart" style="top:10%; left:10%;">❤️</div>
+    <div class="heart" style="top:20%; right:15%;">❤️</div>
+    <div class="heart" style="bottom:15%; left:20%;">❤️</div>
+    <div class="heart" style="bottom:25%; right:10%;">❤️</div>
+
+    <div id="container">
+        <div id="magazine">
+            <div style="background-image:url(pages/1.png);"></div>
+            <div style="background-image:url(pages/hapibirthday.png);"></div>
+            <div style="background-image:url(pages/hapi.png);"></div>
+            <div style="background-image:url(pages/pooh.png);"></div>
+            <div style="background-image:url(pages/poh.png);"></div>
+            <div style="background-image:url(pages/sun.png);"></div>
+            <div style="background-image:url(pages/mylobforyou.png);"></div>
+            <div style="background-image:url(pages/flowers.png);"></div>
+            <div style="background-image:url(pages/suh.png);"></div>
+            <div style="background-image:url(pages/repo.png);"></div>
+            <div style="background-image:url(pages/binary.png);"></div>
+            <!-- Mirrored version solution -->
+            <div class="turn-page">
+                <div class="mirrored-wrapper">
+                    <div class="mirrored-content" style="background-image:url(pages/2.png);"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Invisible click areas -->
+    <div class="click-area" id="left-click"></div>
+    <div class="click-area" id="right-click"></div>
+<!-- Audio element for birthday song -->
+    <audio id="birthdaySong" loop autoplay>
+        <source src="DEVOTION.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    <script type="text/javascript">
+        $(window).ready(function() {
+            function resizeBook() {
+                var width = Math.min($(window).width() * 0.9, 1152);
+                var height = width * (752/1152);
+                $('#magazine').css({
+                    width: width,
+                    height: height
+                });
+            }
+            
+            resizeBook();
+            $(window).resize(resizeBook);
+            
+            $('#magazine').turn({
+                display: 'double',
+                acceleration: true,
+                gradients: !$.isTouch,
+                elevation: 50
+            });
+            
+            $('#left-click').click(function(e) {
+                $('#magazine').turn('previous');
+            });
+            
+            $('#right-click').click(function(e) {
+                $('#magazine').turn('next');
+            });
+        });
+        
+        $(window).bind('keydown', function(e){
+            if (e.keyCode==37)
+                $('#magazine').turn('previous');
+            else if (e.keyCode==39)
+                $('#magazine').turn('next');
+        });
+    </script>
+</body>
+</html>
